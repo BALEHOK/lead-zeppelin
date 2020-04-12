@@ -1,0 +1,51 @@
+# IDE Settings
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.mo
+
+# static/media
+/public
+
+# mac files
+.DS_Store
+Thumbs.db
+
+# database
+*.db
+
+# merge leftovers
+*.orig
+
+# logs
+*.log
+
+# sensitive environment
+env/
+.env
+.aenv
+
+# docker
+./Dockerfile
+docker/.ssh
+
+# tox environments
+.tox
+
+# distutils
+MANIFEST
+build
+
+# Project
+.cache/
+Makefile
+celerybeat-schedule
+
+# Coverage
+.coverage
