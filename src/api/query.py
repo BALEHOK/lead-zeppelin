@@ -1,7 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
-from models import Lead, Client
+from src.models import Lead, Client
 
 
 class LeadObject(SQLAlchemyObjectType):

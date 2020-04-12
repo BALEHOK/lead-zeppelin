@@ -37,13 +37,6 @@ class ApiToken(AccountRelatedMixin, TimestampMixin, db.Model):
     token = db.Column(db.String(256))
 
 
-lead_funnel_step_association = db.Table('lead_funnel_step', db.Model.metadata,
-                                        db.Column('lead_id', UUID(as_uuid=True), db.ForeignKey('leads.id')),
-                                        db.Column('funnel_step_id', UUID(as_uuid=True),
-                                                  db.ForeignKey('funnel_steps.id'))
-                                        )
-
-
 class Lead(UuidMixin, TimestampMixin, db.Model):
     __tablename__ = 'leads'
     client_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clients.id'))
@@ -51,6 +44,9 @@ class Lead(UuidMixin, TimestampMixin, db.Model):
     medium = db.Column(db.String(256))
     campaign = db.Column(db.String(256))
     content = db.Column(db.String(256))
+    funnel_step_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnel_steps.id'))
+    funnel_step = db.relationship("FunnelStep", back_populates='leads')
+
 
     def __repr__(self):
         return '<Lead %r>' % self.user
@@ -78,7 +74,14 @@ class Funnel(AccountRelatedMixin, db.Model):
 class FunnelStep(UuidMixin, db.Model):
     __tablename__ = 'funnel_steps'
     name = db.Column(db.String(256))
+    code = db.Column(db.String(15))
     funnel_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnels.id'))
-    leads = db.relationship("Lead",
-                            secondary=lead_funnel_step_association,
-                            backref="funnel_steps")
+    leads = db.relationship("Lead", back_populates='funnel_step')
+
+
+class LeadFunnelStepHistory(UuidMixin, db.Model):
+    __tabelname__ = 'lead_funnel_step_history'
+    prev_step_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnel_steps.id'), nullable=True)
+    funnel_step_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnel_steps.id'), nullable=True)
+    lead_id = db.Column(UUID(as_uuid=True), db.ForeignKey('leads.id'))
+    changed = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
