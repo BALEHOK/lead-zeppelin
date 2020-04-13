@@ -1,7 +1,8 @@
-sqlalchemy
+psycopg2-binary==2.8.4
 flask
 flask-graphql
 flask-migrate
 flask-sqlalchemy
 graphene
 graphene-sqlalchemy
+sqlalchemy

@@ -11,3 +11,7 @@ python src/app.py runserver
 
 start chrome without Preflight requests
 open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+
+Docker
+docker build -t lead-zeppelin .
+docker run -it --network host -p 5000:5000 --rm --name lead-zepp lead-zeppelin
