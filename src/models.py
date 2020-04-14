@@ -56,6 +56,7 @@ class Client(AccountRelatedMixin, TimestampMixin, db.Model):
     __tablename__ = 'clients'
     name = db.Column(db.String(256))
     email = db.Column(db.String(256))
+    phone = db.Column(db.String(256))
     vk = db.Column(db.String(256))
     fb = db.Column(db.String(256))
     gc = db.Column(db.String(256))

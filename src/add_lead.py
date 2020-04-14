@@ -1,6 +1,6 @@
 from src.models import Account, Client, db, Lead, Funnel, FunnelStep, LeadFunnelStepHistory
 
-known_client_ids = ['vk', 'fb', 'gc', 'email']
+known_client_ids = ['vk', 'fb', 'gc', 'email', 'phone']
 known_lead_markers = ['source', 'medium', 'campaign', 'content']
 
 
