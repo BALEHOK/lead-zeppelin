@@ -1,4 +1,4 @@
-psycopg2-binary==2.8.4
+psycopg2-binary
 flask
 flask-graphql
 flask-migrate
@@ -7,3 +7,5 @@ graphene
 graphene-sqlalchemy
 sqlalchemy
 gunicorn
+pymongo
+mongoengine

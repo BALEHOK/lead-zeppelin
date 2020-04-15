@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, send_from_directory, request
 from flask_graphql import GraphQLView
+from mongoengine import connect
 
 from src.add_lead import add_lead
 from src.models import db
@@ -11,15 +12,17 @@ from src.api.schema import schema
 app = Flask(__name__)
 app.debug = os.getenv('DEBUG', 'True').lower() == 'true'
 
-# Configs
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL',
                                                   'postgres://master:local_dev@localhost:5432/lead_collector')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 port = int(os.getenv('PORT', '5000'))
+mongo_db_uri = os.getenv('MONGO_URL', 'mongodb://localhost:27017/database_name')
 
 with app.app_context():
     db.init_app(app)
     db.create_all()
+
+connect(host='mongodb://localhost/lead_zeppelin_dev')
 
 # Routes
 app.add_url_rule(
