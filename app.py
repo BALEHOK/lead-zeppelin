@@ -4,10 +4,11 @@ from flask import Flask, send_from_directory, request
 from flask_graphql import GraphQLView
 from mongoengine import connect
 
-from src.add_lead import add_lead
-from src.models import db
+from src.leads.lead_interactor import LeadInteractor
+from src.leads.models import db
 
 from src.api.schema import schema
+from src.processes.process_interactor import ProcessInteractor
 
 app = Flask(__name__)
 app.debug = os.getenv('DEBUG', 'True').lower() == 'true'
@@ -22,7 +23,7 @@ with app.app_context():
     db.init_app(app)
     db.create_all()
 
-connect(host='mongodb://localhost/lead_zeppelin_dev')
+connect(host='mongodb://localhost:27017/lead_zeppelin_dev')
 
 # Routes
 app.add_url_rule(
@@ -39,7 +40,12 @@ app.add_url_rule(
 @app.route('/tracking/lead', methods=["GET"])
 @app.route('/tracking/lead/', methods=["GET"])
 def tracking_lead():
-    add_lead(request.args)
+    lead_interactor = LeadInteractor()
+    lead = lead_interactor.register_event(request.args)
+
+    process_interactor = ProcessInteractor()
+    process_interactor.run_for_entity(lead.funnel_step_id)
+
     return 'OK'
 
 
