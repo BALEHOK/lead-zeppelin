@@ -1,32 +1,27 @@
-import os
-
 from flask import Flask, send_from_directory, request
 from flask_graphql import GraphQLView
 from mongoengine import connect
 
+from src.config import config
 from src.leads.lead_interactor import LeadInteractor
 from src.leads.models import db
 
 from src.api.schema import schema
 from src.processes.process_interactor import ProcessInteractor
 
-app = Flask(__name__)
-app.debug = os.getenv('DEBUG', 'True').lower() == 'true'
+web_app = Flask(__name__)
+web_app.debug = config.get('debug')
+web_app.config['SQLALCHEMY_DATABASE_URI'] = config.get('sql_db_url')
+web_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL',
-                                                  'postgres://master:local_dev@localhost:5432/lead_collector')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-port = int(os.getenv('PORT', '5000'))
-mongo_db_uri = os.getenv('MONGO_URL', 'mongodb://localhost:27017/database_name')
-
-with app.app_context():
-    db.init_app(app)
+with web_app.app_context():
+    db.init_app(web_app)
     db.create_all()
 
-connect(host='mongodb://localhost:27017/lead_zeppelin_dev')
+connect(host=config.get('mongo_web_uri'))
 
 # Routes
-app.add_url_rule(
+web_app.add_url_rule(
     '/graphql',
     view_func=GraphQLView.as_view(
         'graphql',
@@ -37,8 +32,8 @@ app.add_url_rule(
 
 
 # ?account=plsch&email=asdf@zcv.ru&gc_id=33556&source=hz&content=grouppost&goal=paid_m1
-@app.route('/tracking/lead', methods=["GET"])
-@app.route('/tracking/lead/', methods=["GET"])
+@web_app.route('/tracking/lead', methods=["GET"])
+@web_app.route('/tracking/lead/', methods=["GET"])
 def tracking_lead():
     lead_interactor = LeadInteractor()
     lead = lead_interactor.register_event(request.args)
@@ -49,15 +44,16 @@ def tracking_lead():
     return 'OK'
 
 
-@app.route('/static/<path:path>', methods=["GET"])
+@web_app.route('/static/<path:path>', methods=["GET"])
 def send_js(path):
     return send_from_directory('static', path)
 
 
-@app.route('/', methods=["GET"])
+@web_app.route('/', methods=["GET"])
 def index():
     return '<p> Hello World!!!</p>'
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    port = config.get('web_port')
+    web_app.run(host='0.0.0.0', port=port)

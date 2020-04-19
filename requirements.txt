@@ -1,12 +1,13 @@
-psycopg2-binary
+celery
 flask
 flask-graphql
 flask-migrate
 flask-sqlalchemy
 graphene
 graphene-sqlalchemy
-sqlalchemy
 gunicorn
-pymongo
 mongoengine
 mongomock
+psycopg2-binary
+pymongo
+sqlalchemy
