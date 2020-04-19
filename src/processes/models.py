@@ -11,7 +11,7 @@ class StepType(Enum):
     message = auto()
 
 
-class ProccessStep(EmbeddedDocument):
+class ProcessStep(EmbeddedDocument):
     meta = {'allow_inheritance': True}
 
     step_id = UUIDField(default=uuid.uuid4)
@@ -20,17 +20,17 @@ class ProccessStep(EmbeddedDocument):
     prev_step_id = UUIDField()
 
 
-class ProcessStepDelay(ProccessStep):
+class ProcessStepDelay(ProcessStep):
     type = StringField(default=StepType.delay.name)
     delay = IntField()
 
 
-class ProcessStepMessage(ProccessStep):
+class ProcessStepMessage(ProcessStep):
     type = StringField(default=StepType.message.name)
     message = StringField()
 
 
-class ProcessStepWaitUntil(ProccessStep):
+class ProcessStepWaitUntil(ProcessStep):
     type = StringField(default=StepType.wait_until.name)
     when = DateTimeField()
 
@@ -40,4 +40,4 @@ class Process(Document):
     name = StringField()
     description = StringField()
     first_step_id = UUIDField()
-    steps = ListField(EmbeddedDocumentField(ProccessStep))
+    steps = ListField(EmbeddedDocumentField(ProcessStep))
