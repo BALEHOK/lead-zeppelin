@@ -39,7 +39,7 @@ def tracking_lead():
     lead = lead_interactor.register_event(request.args)
 
     process_interactor = ProcessInteractor()
-    process_interactor.run_for_entity(lead.funnel_step_id)
+    process_interactor.run_for_entity(str(lead.funnel_step_id))
 
     return 'OK'
 

@@ -7,7 +7,7 @@ install extension:
 create extension if not exists "uuid-ossp";
 
 start server
-python app.py runserver
+python -m src.web_app runserver
 
 start chrome without Preflight requests
 open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security

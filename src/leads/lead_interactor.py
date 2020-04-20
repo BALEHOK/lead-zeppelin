@@ -5,7 +5,7 @@ known_lead_markers = ['source', 'medium', 'campaign', 'content']
 
 
 class LeadInteractor:
-    def register_event(args):
+    def register_event(self, args):
         account_code = args.get('account')
         account = Account.query.filter_by(code=account_code).first()
         if account is None:
