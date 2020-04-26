@@ -3,6 +3,7 @@ celery[redis]
 flask
 flask-graphql
 flask-migrate
+flask-script
 flask-sqlalchemy
 graphene
 graphene-sqlalchemy

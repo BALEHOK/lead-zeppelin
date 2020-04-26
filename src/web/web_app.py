@@ -1,13 +1,14 @@
 from flask import Flask, send_from_directory, request
 from flask_graphql import GraphQLView
-from mongoengine import connect
+# from mongoengine import connect
 
 from src.config import config
 from src.leads.lead_interactor import LeadInteractor
 from src.leads.models import db
 
-from src.api.schema import schema
-from src.processes.process_interactor import ProcessInteractor
+from src.web.schema import schema
+# from src.leads.payment_interactor import PaymentInteractor
+# from src.processes.process_interactor import ProcessInteractor
 
 web_app = Flask(__name__)
 web_app.debug = config.get('debug')
@@ -16,7 +17,6 @@ web_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 with web_app.app_context():
     db.init_app(web_app)
-    db.create_all()
 
 # connect(host=config.get('mongo_web_uri'))
 
@@ -37,6 +37,13 @@ web_app.add_url_rule(
 def tracking_lead():
     lead_interactor = LeadInteractor()
     lead = lead_interactor.register_event(request.args)
+
+    # amount_paid = request.args.get('paid')
+    # if (amount_paid):
+    #     payment_interactor = PaymentInteractor()
+    #     payment_interactor.add_leads_payment(lead, amount_paid)
+
+    db.session.commit()
 
     # process_interactor = ProcessInteractor()
     # process_interactor.run_for_entity(str(lead.funnel_step_id))

@@ -40,10 +40,9 @@ class LeadInteractor:
         if funnel_step is not None:
             prev_step_id = lead.funnel_step.id if lead.funnel_step is not None else None
             if (prev_step_id != funnel_step.id):
-                history = LeadFunnelStepHistory(prev_step_id=prev_step_id, funnel_step_id=funnel_step.id, lead_id=lead.id)
+                history = LeadFunnelStepHistory(prev_step_id=prev_step_id, funnel_step_id=funnel_step.id,
+                                                lead_id=lead.id)
                 db.session.add(history)
                 lead.funnel_step = funnel_step
-
-        db.session.commit()
 
         return lead
