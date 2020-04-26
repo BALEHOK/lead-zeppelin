@@ -18,7 +18,7 @@ with web_app.app_context():
     db.init_app(web_app)
     db.create_all()
 
-connect(host=config.get('mongo_web_uri'))
+# connect(host=config.get('mongo_web_uri'))
 
 # Routes
 web_app.add_url_rule(
@@ -38,8 +38,8 @@ def tracking_lead():
     lead_interactor = LeadInteractor()
     lead = lead_interactor.register_event(request.args)
 
-    process_interactor = ProcessInteractor()
-    process_interactor.run_for_entity(str(lead.funnel_step_id))
+    # process_interactor = ProcessInteractor()
+    # process_interactor.run_for_entity(str(lead.funnel_step_id))
 
     return 'OK'
 
