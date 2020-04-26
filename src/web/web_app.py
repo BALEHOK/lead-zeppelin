@@ -7,7 +7,7 @@ from src.leads.lead_interactor import LeadInteractor
 from src.leads.models import db
 
 from src.web.schema import schema
-# from src.leads.payment_interactor import PaymentInteractor
+from src.leads.payment_interactor import PaymentInteractor
 # from src.processes.process_interactor import ProcessInteractor
 
 web_app = Flask(__name__)
@@ -38,10 +38,10 @@ def tracking_lead():
     lead_interactor = LeadInteractor()
     lead = lead_interactor.register_event(request.args)
 
-    # amount_paid = request.args.get('paid')
-    # if (amount_paid):
-    #     payment_interactor = PaymentInteractor()
-    #     payment_interactor.add_leads_payment(lead, amount_paid)
+    amount_paid = request.args.get('paid')
+    if (amount_paid):
+        payment_interactor = PaymentInteractor()
+        payment_interactor.add_leads_payment(lead, amount_paid)
 
     db.session.commit()
 

@@ -8,7 +8,7 @@ db = SQLAlchemy()
 
 
 class UuidMixin(object):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"))
+    id = db.Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text('uuid_generate_v4()'))
 
 
 class AccountRelatedMixin(UuidMixin):
@@ -45,7 +45,8 @@ class Lead(UuidMixin, TimestampMixin, db.Model):
     campaign = db.Column(db.String(256))
     content = db.Column(db.String(256))
     funnel_step_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnel_steps.id'))
-    funnel_step = db.relationship("FunnelStep", back_populates='leads')
+    funnel_step = db.relationship('FunnelStep', back_populates='leads')
+    payments = db.relationship('Payment', back_populates='lead')
 
 
 class Client(AccountRelatedMixin, TimestampMixin, db.Model):
@@ -57,7 +58,7 @@ class Client(AccountRelatedMixin, TimestampMixin, db.Model):
     fb = db.Column(db.String(256))
     gc = db.Column(db.String(256))
     leads = db.relationship('Lead', backref='client')
-    # payments = db.relationship('Payment', back_populates='client')
+    payments = db.relationship('Payment', back_populates='client')
 
     def __repr__(self):
         return '<User %r>' % self.name
@@ -74,7 +75,8 @@ class FunnelStep(UuidMixin, db.Model):
     name = db.Column(db.String(256))
     code = db.Column(db.String(15))
     funnel_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnels.id'))
-    leads = db.relationship("Lead", back_populates='funnel_step')
+    leads = db.relationship('Lead', back_populates='funnel_step')
+    payments = db.relationship('Payment', back_populates='funnel_step')
 
 
 class LeadFunnelStepHistory(UuidMixin, db.Model):
@@ -85,10 +87,12 @@ class LeadFunnelStepHistory(UuidMixin, db.Model):
     changed = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
 
 
-# class Payment(UuidMixin, TimestampMixin, db.Model):
-#     __tablename__ = 'client_payment'
-#     client_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clients.id'))
-#     client = db.relationship("Client", back_populates='payments')
-#     lead_id = db.Column(UUID(as_uuid=True), db.ForeignKey('leads.id'), nullable=True)
-#     funnel_step_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnel_steps.id'), nullable=True)
-#     amount_paid = db.Column(db.Integer())
+class Payment(UuidMixin, TimestampMixin, db.Model):
+    __tablename__ = 'client_payment'
+    amount_paid = db.Column(db.Integer())
+    client_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clients.id'))
+    client = db.relationship('Client', back_populates='payments')
+    lead_id = db.Column(UUID(as_uuid=True), db.ForeignKey('leads.id'), nullable=True)
+    lead = db.relationship('Lead', back_populates='payments')
+    funnel_step_id = db.Column(UUID(as_uuid=True), db.ForeignKey('funnel_steps.id'), nullable=True)
+    funnel_step = db.relationship('FunnelStep', back_populates='payments')
