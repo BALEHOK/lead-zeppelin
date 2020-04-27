@@ -41,7 +41,8 @@ def tracking_lead():
     amount_paid = request.args.get('paid')
     if (amount_paid):
         payment_interactor = PaymentInteractor()
-        payment_interactor.add_leads_payment(lead, amount_paid)
+        parse_price = True if 'parse_price' in request.args else False
+        payment_interactor.add_leads_payment(lead, amount_paid, parse_price)
 
     db.session.commit()
 
