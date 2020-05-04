@@ -1,6 +1,7 @@
 celery
 celery[redis]
 flask
+flask_cors
 flask-graphql
 flask-migrate
 flask-script

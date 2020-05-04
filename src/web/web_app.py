@@ -1,4 +1,5 @@
 from flask import Flask, send_from_directory, request
+from flask_cors import CORS
 from flask_graphql import GraphQLView
 # from mongoengine import connect
 
@@ -11,6 +12,7 @@ from src.leads.payment_interactor import PaymentInteractor
 # from src.processes.process_interactor import ProcessInteractor
 
 web_app = Flask(__name__)
+CORS(web_app)
 web_app.debug = config.get('debug')
 web_app.config['SQLALCHEMY_DATABASE_URI'] = config.get('sql_db_url')
 web_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
