@@ -1,18 +1,24 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
-from src.leads.models import Lead, Client, Funnel, FunnelStep, LeadFunnelStepHistory, Payment
+from src.leads.models import Lead, Client, Funnel, FunnelStep, LeadFunnelStepHistory, Payment, Account
 
 
-class LeadObject(SQLAlchemyObjectType):
+class AccountObject(SQLAlchemyObjectType):
     class Meta:
-        model = Lead
+        model = Account
         interfaces = (graphene.relay.Node,)
 
 
 class ClientObject(SQLAlchemyObjectType):
     class Meta:
         model = Client
+        interfaces = (graphene.relay.Node,)
+
+
+class LeadObject(SQLAlchemyObjectType):
+    class Meta:
+        model = Lead
         interfaces = (graphene.relay.Node,)
 
 
@@ -42,9 +48,14 @@ class PaymentObject(SQLAlchemyObjectType):
 
 class Query(graphene.ObjectType):
     node = graphene.relay.Node.Field()
-    leads = SQLAlchemyConnectionField(LeadObject)
+    account = graphene.Field(AccountObject)
     clients = SQLAlchemyConnectionField(ClientObject)
+    leads = SQLAlchemyConnectionField(LeadObject)
     funnels = SQLAlchemyConnectionField(FunnelObject)
     funnelSteps = SQLAlchemyConnectionField(FunnelStepObject)
-    LeadFunnelStepHistories = SQLAlchemyConnectionField(LeadFunnelStepHistoryObject)
+    leadFunnelStepHistories = SQLAlchemyConnectionField(LeadFunnelStepHistoryObject)
     payments = SQLAlchemyConnectionField(PaymentObject)
+
+    @classmethod
+    def resolve_account(cls, info, id):
+        return Account.query.first()
